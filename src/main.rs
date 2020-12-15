@@ -1,6 +1,22 @@
-use std::io;
 use std::collections::HashSet;
+use std::io;
 use std::iter::FromIterator;
+
+fn generate_board_array() -> [[u8; 9]; 9] {
+    let board_array: [[u8; 9]; 9] = [
+        [5, 0, 0, 0, 8, 0, 0, 4, 9],
+        [0, 0, 0, 5, 0, 0, 0, 3, 0],
+        [0, 6, 7, 3, 0, 0, 0, 0, 1],
+        [1, 5, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 2, 0, 8, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 8],
+        [7, 0, 0, 0, 0, 4, 1, 5, 0],
+        [0, 3, 0, 0, 0, 2, 0, 0, 0],
+        [4, 9, 0, 0, 5, 0, 0, 0, 3],
+    ];
+
+    return board_array;
+}
 
 fn print_board(board_array: &[[u8; 9]; 9]) {
     let mut board_canvas: Vec<char> = "\
@@ -22,7 +38,9 @@ fn print_board(board_array: &[[u8; 9]; 9]) {
         ║   │   │   ║   │   │   ║   │   │   ║\n\
         ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢\n\
         ║   │   │   ║   │   │   ║   │   │   ║\n\
-        ╚═══╧═══╧═══╩═══╧═══╧═══╩═══╧═══╧═══╝".chars().collect();
+        ╚═══╧═══╧═══╩═══╧═══╧═══╩═══╧═══╧═══╝"
+        .chars()
+        .collect();
 
     for (row, numbers) in board_array.iter().enumerate() {
         for (column, number) in numbers.iter().enumerate() {
@@ -45,36 +63,26 @@ fn print_board(board_array: &[[u8; 9]; 9]) {
     println!("{}", board_str);
 }
 
-fn generate_board_array() -> [[u8; 9]; 9] {
-    let board_array: [[u8; 9]; 9] = [
-        [5, 0, 0, 0, 8, 0, 0, 4, 9],
-        [0, 0, 0, 5, 0, 0, 0, 3, 0],
-        [0, 6, 7, 3, 0, 0, 0, 0, 1],
-        [1, 5, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 2, 0, 8, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1, 8],
-        [7, 0, 0, 0, 0, 4, 1, 5, 0],
-        [0, 3, 0, 0, 0, 2, 0, 0, 0],
-        [4, 9, 0, 0, 5, 0, 0, 0, 3],
-    ];
-
-    return board_array;
-}
-
 fn input_number_to_board_array(board_array: &mut [[u8; 9]; 9]) {
     println!("input row: ");
     let mut row = String::new();
-    io::stdin().read_line(&mut row).expect("Failed to read row!");
+    io::stdin()
+        .read_line(&mut row)
+        .expect("Failed to read row!");
     let row: usize = row.trim().parse().expect("Please type a number!");
 
     println!("input column: ");
     let mut column = String::new();
-    io::stdin().read_line(&mut column).expect("Failed to read column!");
+    io::stdin()
+        .read_line(&mut column)
+        .expect("Failed to read column!");
     let column: usize = column.trim().parse().expect("Please type a number!");
 
     println!("input number: ");
     let mut number = String::new();
-    io::stdin().read_line(&mut number).expect("Failed to read number!");
+    io::stdin()
+        .read_line(&mut number)
+        .expect("Failed to read number!");
     let number: u8 = number.trim().parse().expect("Please type a number!");
 
     board_array[row][column] = number;
@@ -104,14 +112,14 @@ fn check_board_array_success(board_array: &[[u8; 9]; 9]) -> bool {
         for column in [0, 3, 6].iter() {
             let mut grid_number_set: HashSet<u8> = HashSet::new();
             grid_number_set.insert(board_array[*row][*column]);
-            grid_number_set.insert(board_array[*row][*column+1]);
-            grid_number_set.insert(board_array[*row][*column+2]);
-            grid_number_set.insert(board_array[*row+1][*column]);
-            grid_number_set.insert(board_array[*row+1][*column+1]);
-            grid_number_set.insert(board_array[*row+1][*column+2]);
-            grid_number_set.insert(board_array[*row+2][*column]);
-            grid_number_set.insert(board_array[*row+2][*column+1]);
-            grid_number_set.insert(board_array[*row+2][*column+2]);
+            grid_number_set.insert(board_array[*row][*column + 1]);
+            grid_number_set.insert(board_array[*row][*column + 2]);
+            grid_number_set.insert(board_array[*row + 1][*column]);
+            grid_number_set.insert(board_array[*row + 1][*column + 1]);
+            grid_number_set.insert(board_array[*row + 1][*column + 2]);
+            grid_number_set.insert(board_array[*row + 2][*column]);
+            grid_number_set.insert(board_array[*row + 2][*column + 1]);
+            grid_number_set.insert(board_array[*row + 2][*column + 2]);
             if number_set != grid_number_set {
                 return false;
             }
