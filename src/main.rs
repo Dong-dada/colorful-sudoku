@@ -1,4 +1,6 @@
-fn generate_board_str(board_array: &[[u8; 9]; 9]) -> String {
+use std::io;
+
+fn print_board(board_array: &[[u8; 9]; 9]) {
     let mut board_canvas: Vec<char> = "\
         ╔═══╤═══╤═══╦═══╤═══╤═══╦═══╤═══╤═══╗\n\
         ║   │   │   ║   │   │   ║   │   │   ║\n\
@@ -38,10 +40,10 @@ fn generate_board_str(board_array: &[[u8; 9]; 9]) -> String {
     }
 
     let board_str: String = board_canvas.into_iter().collect();
-    return board_str;
+    println!("{}", board_str);
 }
 
-fn main() {
+fn generate_board_array() -> [[u8; 9]; 9] {
     let board_array: [[u8; 9]; 9] = [
         [5, 0, 0, 0, 8, 0, 0, 4, 9],
         [0, 0, 0, 5, 0, 0, 0, 3, 0],
@@ -54,6 +56,33 @@ fn main() {
         [4, 9, 0, 0, 5, 0, 0, 0, 3],
     ];
 
-    let board_str = generate_board_str(&board_array);
-    println!("{}", board_str);
+    return board_array;
+}
+
+fn input_number_to_board_array(board_array: &mut [[u8; 9]; 9]) {
+    println!("input row: ");
+    let mut row = String::new();
+    io::stdin().read_line(&mut row).expect("Failed to read row!");
+    let row: usize = row.trim().parse().expect("Please type a number!");
+
+    println!("input column: ");
+    let mut column = String::new();
+    io::stdin().read_line(&mut column).expect("Failed to read column!");
+    let column: usize = column.trim().parse().expect("Please type a number!");
+
+    println!("input number: ");
+    let mut number = String::new();
+    io::stdin().read_line(&mut number).expect("Failed to read number!");
+    let number: u8 = number.trim().parse().expect("Please type a number!");
+
+    board_array[row][column] = number;
+}
+
+fn main() {
+    let mut board_array = generate_board_array();
+    print_board(&board_array);
+    loop {
+        input_number_to_board_array(&mut board_array);
+        print_board(&board_array);
+    }
 }
