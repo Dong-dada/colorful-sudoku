@@ -1,37 +1,59 @@
-use std::ops::Add;
+fn generate_board_str(board_array: &[[u8; 9]; 9]) -> String {
+    let mut board_canvas: Vec<char> = "\
+        ╔═══╤═══╤═══╦═══╤═══╤═══╦═══╤═══╤═══╗\n\
+        ║   │   │   ║   │   │   ║   │   │   ║\n\
+        ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢\n\
+        ║   │   │   ║   │   │   ║   │   │   ║\n\
+        ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢\n\
+        ║   │   │   ║   │   │   ║   │   │   ║\n\
+        ╠═══╪═══╪═══╬═══╪═══╪═══╬═══╪═══╪═══╣\n\
+        ║   │   │   ║   │   │   ║   │   │   ║\n\
+        ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢\n\
+        ║   │   │   ║   │   │   ║   │   │   ║\n\
+        ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢\n\
+        ║   │   │   ║   │   │   ║   │   │   ║\n\
+        ╠═══╪═══╪═══╬═══╪═══╪═══╬═══╪═══╪═══╣\n\
+        ║   │   │   ║   │   │   ║   │   │   ║\n\
+        ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢\n\
+        ║   │   │   ║   │   │   ║   │   │   ║\n\
+        ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢\n\
+        ║   │   │   ║   │   │   ║   │   │   ║\n\
+        ╚═══╧═══╧═══╩═══╧═══╧═══╩═══╧═══╧═══╝".chars().collect();
 
-fn generate_board_str(board_array: [[u8; 9]; 9]) -> String {
-    let mut board_str = String::new();
-    board_str = board_str.add("╔═══╤═══╤═══╦═══╤═══╤═══╦═══╤═══╤═══╗");
-    board_str = board_str.add("\n");
-    for (row_index, row_numbers) in board_array.iter().enumerate() {
-        board_str = board_str.add("║");
-        for (column_index, number) in row_numbers.iter().enumerate() {
-            let number_str = if *number == 0u8 { " ".to_string() } else { number.to_string() };
-            if (column_index + 1) % 3 == 0 {
-                board_str = board_str.add(&format!(" {} ║", number_str));
+    for (row, numbers) in board_array.iter().enumerate() {
+        for (column, number) in numbers.iter().enumerate() {
+            // - rows in canvas are: [1, 3, 5, 7, 9, 11, 13, 15, 17]
+            // - columns in canvas are: [2, 6, 10, 14, 18, 22, 26, 30, 34]
+            let row_in_canvas = (row + 1) * 2 - 1;
+            let column_in_canvas = (column + 1) * 4 - 2;
+            let row_length = 38;
+            let offset_in_canvas = row_in_canvas * row_length + column_in_canvas;
+
+            if *number != 0u8 {
+                board_canvas[offset_in_canvas] = char::from(*number + 48);
             } else {
-                board_str = board_str.add(&format!(" {} │", number_str));
+                board_canvas[offset_in_canvas] = ' ';
             }
-        }
-        board_str = board_str.add("\n");
-        if row_index == 8 {
-            board_str = board_str.add("╚═══╧═══╧═══╩═══╧═══╧═══╩═══╧═══╧═══╝");
-        } else if (row_index + 1) % 3 == 0 {
-            board_str = board_str.add("╠═══╪═══╪═══╬═══╪═══╪═══╬═══╪═══╪═══╣");
-            board_str = board_str.add("\n");
-        } else {
-            board_str = board_str.add("╟───┼───┼───╫───┼───┼───╫───┼───┼───╢");
-            board_str = board_str.add("\n");
         }
     }
 
+    let board_str: String = board_canvas.into_iter().collect();
     return board_str;
 }
 
 fn main() {
-    let board_array = [[0u8; 9]; 9];
+    let board_array: [[u8; 9]; 9] = [
+        [5, 0, 0, 0, 8, 0, 0, 4, 9],
+        [0, 0, 0, 5, 0, 0, 0, 3, 0],
+        [0, 6, 7, 3, 0, 0, 0, 0, 1],
+        [1, 5, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 2, 0, 8, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 8],
+        [7, 0, 0, 0, 0, 4, 1, 5, 0],
+        [0, 3, 0, 0, 0, 2, 0, 0, 0],
+        [4, 9, 0, 0, 5, 0, 0, 0, 3],
+    ];
 
-    let board_str = generate_board_str(board_array);
+    let board_str = generate_board_str(&board_array);
     println!("{}", board_str);
 }
