@@ -1,9 +1,7 @@
 use std::collections::HashSet;
-use std::{io, thread};
 use std::iter::FromIterator;
 use pancurses::Input;
 use std::convert::TryFrom;
-use std::time::Duration;
 
 fn generate_board_array() -> [[u8; 9]; 9] {
     // let board_array: [[u8; 9]; 9] = [
@@ -19,9 +17,9 @@ fn generate_board_array() -> [[u8; 9]; 9] {
     // ];
 
     let board_array: [[u8; 9]; 9] = [
-        [0, 1, 3, 6, 8, 7, 2, 4, 9],
+        [5, 1, 3, 6, 8, 7, 2, 4, 9],
         [8, 4, 9, 5, 2, 1, 6, 3, 7],
-        [2, 6, 7, 3, 4, 9, 5, 8, 1],
+        [2, 6, 7, 3, 4, 9, 0, 8, 1],
         [1, 5, 8, 4, 6, 3, 9, 7, 2],
         [9, 7, 4, 2, 1, 8, 3, 6, 5],
         [3, 2, 6, 7, 9, 5, 4, 1, 8],
@@ -156,15 +154,15 @@ fn main() {
                     continue;
                 }
 
-                let row: usize = board_position.x as usize;
-                let column: usize = board_position.y as usize;
+                let row: usize = board_position.y as usize;
+                let column: usize = board_position.x as usize;
                 let number: u8 = if c == ' ' {0u8} else { char_to_u8(c) };
                 board_array[row][column] = number;
                 window.addch(c);
                 window.refresh();
 
                 if check_board_array_success(&board_array) {
-                    pancurses::napms(2000);
+                    pancurses::napms(1000);
                     window.clear();
                     window.addstr("Congratulations!");
                     window.refresh();
