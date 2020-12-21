@@ -31,6 +31,13 @@ pub enum Error {
 }
 
 impl Board {
+    pub fn generate_empty() -> Board {
+        return Board {
+            slots: Default::default(),
+            current_pos: Position { column: 0, row: 0 },
+        };
+    }
+
     pub fn generate() -> Board {
         let board_array: [[u8; 9]; 9] = [
             [5, 1, 3, 6, 8, 7, 2, 4, 9],
@@ -46,7 +53,7 @@ impl Board {
 
         let mut board = Board {
             slots: Default::default(),
-            current_pos: Position { column: 0, row: 0}
+            current_pos: Position { column: 0, row: 0 },
         };
         for (row, row_slots) in board.slots.iter_mut().enumerate() {
             for (column, slot) in row_slots.iter_mut().enumerate() {
@@ -174,6 +181,19 @@ impl Board {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn generate_empty_board() {
+        let board = Board::generate_empty();
+        assert_eq!(board.current_pos.column, 0);
+        assert_eq!(board.current_pos.row, 0);
+        for row_slots in board.slots.iter() {
+            for slot in row_slots.iter() {
+                assert_eq!(slot.number, 0);
+                assert_eq!(slot.modifiable, true);
+            }
+        }
+    }
 
     #[test]
     fn generate_board() {

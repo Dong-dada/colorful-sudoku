@@ -1,54 +1,11 @@
 mod models;
+mod views;
 
 use std::collections::HashSet;
 use pancurses::Input;
 use std::convert::TryFrom;
 use crate::models::board::Board;
-
-fn generate_board_string(board: &Board) -> String {
-    let mut board_canvas: Vec<char> = "\
-        ╔═══╤═══╤═══╦═══╤═══╤═══╦═══╤═══╤═══╗\n\
-        ║   │   │   ║   │   │   ║   │   │   ║\n\
-        ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢\n\
-        ║   │   │   ║   │   │   ║   │   │   ║\n\
-        ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢\n\
-        ║   │   │   ║   │   │   ║   │   │   ║\n\
-        ╠═══╪═══╪═══╬═══╪═══╪═══╬═══╪═══╪═══╣\n\
-        ║   │   │   ║   │   │   ║   │   │   ║\n\
-        ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢\n\
-        ║   │   │   ║   │   │   ║   │   │   ║\n\
-        ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢\n\
-        ║   │   │   ║   │   │   ║   │   │   ║\n\
-        ╠═══╪═══╪═══╬═══╪═══╪═══╬═══╪═══╪═══╣\n\
-        ║   │   │   ║   │   │   ║   │   │   ║\n\
-        ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢\n\
-        ║   │   │   ║   │   │   ║   │   │   ║\n\
-        ╟───┼───┼───╫───┼───┼───╫───┼───┼───╢\n\
-        ║   │   │   ║   │   │   ║   │   │   ║\n\
-        ╚═══╧═══╧═══╩═══╧═══╧═══╩═══╧═══╧═══╝"
-        .chars()
-        .collect();
-
-    for (row, row_slots) in board.get_slots().iter().enumerate() {
-        for (column, slot) in row_slots.iter().enumerate() {
-            // - rows in canvas are: [1, 3, 5, 7, 9, 11, 13, 15, 17]
-            // - columns in canvas are: [2, 6, 10, 14, 18, 22, 26, 30, 34]
-            let row_in_canvas = (row + 1) * 2 - 1;
-            let column_in_canvas = (column + 1) * 4 - 2;
-            let row_length = 38;
-            let offset_in_canvas = row_in_canvas * row_length + column_in_canvas;
-
-            if slot.number != 0u8 {
-                board_canvas[offset_in_canvas] = char::from(slot.number + 48);
-            } else {
-                board_canvas[offset_in_canvas] = ' ';
-            }
-        }
-    }
-
-    let board_str: String = board_canvas.into_iter().collect();
-    return board_str;
-}
+use crate::views::board_view::BoardView;
 
 struct WindowPosition {
     x: i32,
@@ -69,8 +26,8 @@ fn char_to_u8(c: char) -> u8 {
 
 fn main() {
     let mut board = Board::generate();
-    let board_string = generate_board_string(&board);
-
+    let board_view = BoardView::new(&board);
+    let board_string = board_view.generate_string();
     let window = pancurses::initscr();
     window.addstr(board_string);
     window.refresh();
